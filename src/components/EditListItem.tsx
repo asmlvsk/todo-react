@@ -3,13 +3,10 @@ import { Build, Delete, Save } from '@mui/icons-material';
 import { Grid, IconButton, Input, Paper } from '@mui/material';
 import { ITodos } from '../types/types';
 
-interface Props {
-  addTodo: Props;
-}
-
 interface ItemProps {
   todo: ITodos;
 }
+
 const EditListItem: FC<ItemProps> = function ({ todo }) {
   const inputRef = createRef<HTMLInputElement>();
 

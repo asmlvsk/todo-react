@@ -2,37 +2,33 @@ import React, { createRef, FC, useState } from 'react';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
 import axios from 'axios';
-import { ITodos } from '../types/types';
+import { ITodos, ITodo } from '../types/types';
 
 interface Props {
-  addToList: (todo: ITodos) => void;
+  addToList: (todo: ITodo) => void;
 }
 
-const initTodo = { id: 0, attributes: { title: '', body: '', is_done: false } };
-
 const AddTodoForm: FC<Props> = function ({ addToList }) {
-  const [todos, setTodos] = useState(initTodo);
   const errorRef = createRef<HTMLParagraphElement>();
   const inputRef = createRef<HTMLInputElement>();
 
   // eslint-disable-next-line consistent-return
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(inputRef.current!.value);
     e.preventDefault();
+
+    const newTodo: ITodo = {
+      title: inputRef.current!.value,
+      body: '',
+      is_done: false,
+    };
+
     if (inputRef.current!.value === '') {
       errorRef.current!.classList.add('active');
       return null;
     }
     errorRef.current!.classList.remove('active');
 
-    addToList(todos);
-    setTodos(initTodo);
-    e.currentTarget.reset();
-  };
-
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setTodos({ ...todos, [name]: value });
+    addToList(newTodo);
   };
 
   return (
@@ -43,7 +39,7 @@ const AddTodoForm: FC<Props> = function ({ addToList }) {
           'aria-label': 'Description',
         }}
         style={{ width: '90%' }}
-        onChange={onInputChange}
+        inputRef={inputRef}
       />
 
       <Button

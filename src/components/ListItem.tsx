@@ -1,19 +1,29 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { Build, Delete } from '@mui/icons-material';
 import { Grid, IconButton, Paper } from '@mui/material';
-import { ITodos } from '../types/types';
+import axios from 'axios';
+import { ITodo, ITodos } from '../types/types';
 
 interface ItemProps {
   todo: ITodos;
+  removeFromList: (id: number) => void;
 }
-const ListItem: FC<ItemProps> = function ({ todo }) {
-  const state = {
-    fade: false,
+const ListItem: FC<ItemProps> = function ({ todo, removeFromList }) {
+  const [fade, setFade] = useState(false);
+
+  const deleteTodo = (id: number) => {
+    setFade(true);
+
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 500);
+    });
+
+    promise.then(() => removeFromList(id));
   };
 
-  const gridRef = React.createRef();
-
-  const gridClass = state.fade ? 'fade-out' : '';
+  const gridClass = fade ? 'fade-out' : '';
 
   return (
     <div>
@@ -48,13 +58,17 @@ const ListItem: FC<ItemProps> = function ({ todo }) {
           >
             <Build fontSize="small" />
           </IconButton>
-          <IconButton color="secondary" aria-label="Delete">
+          <IconButton
+            color="secondary"
+            aria-label="Delete"
+            onClick={() => deleteTodo(todo.id)}
+          >
             <Delete fontSize="small" />
           </IconButton>
         </Paper>
       </Grid>
       {/* {todo.attributes.body} */}
-      <input type="checkbox" checked={todo.attributes.is_done} />
+      <input type="checkbox" defaultChecked={todo.attributes.is_done} />
     </div>
   );
 };

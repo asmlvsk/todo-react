@@ -1,9 +1,10 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
 import './App.css';
 import { Grid, Paper } from '@mui/material';
-import { ITodos } from './types/types';
+import { ITodos, ITodo } from './types/types';
 import ListItem from './components/ListItem';
 import List from './components/List';
 import AddTodoForm from './components/AddTodoForm';
@@ -21,11 +22,21 @@ function App(this: any) {
     }
   }
 
-  async function postTodos(todo: ITodos) {
+  async function postTodos(todo: ITodo) {
     try {
-      const res = await axios.post('http://localhost:4000/tasks', todo);
+      const res = await axios.post('http://localhost:4000/tasks', {
+        task: todo,
+      });
+      setTodos([...todos, res.data.data]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-      setTodos(res.data.data);
+  async function removeTodoById(id: number) {
+    try {
+      const res = await axios.delete(`http://localhost:4000/tasks/${id}`);
+      setTodos(todos.filter((t: ITodos) => t.id !== id));
     } catch (e) {
       console.log(e);
     }
@@ -39,7 +50,6 @@ function App(this: any) {
 
   return (
     <div className="App">
-      <div>Items</div>
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <Paper
@@ -63,12 +73,13 @@ function App(this: any) {
             width: 500,
           }}
         >
-          <List
-            items={todos}
-            renderItem={(todo: ITodos) => (
-              <ListItem todo={todo} key={todo.id} />
-            )}
-          />
+          {todos.map((todo: ITodos) => (
+            <ListItem
+              removeFromList={removeTodoById}
+              todo={todo}
+              key={todo.id}
+            />
+          ))}
         </Grid>
       </Grid>
     </div>
