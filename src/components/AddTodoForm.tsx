@@ -1,8 +1,7 @@
-import React, { createRef, FC, useState } from 'react';
+import React, { createRef, FC } from 'react';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
-import axios from 'axios';
-import { ITodos, ITodo } from '../types/types';
+import { ITodo } from '../interfaces/interfaces';
 
 interface Props {
   addToList: (todo: ITodo) => void;

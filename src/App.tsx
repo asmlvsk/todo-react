@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
 /* eslint-disable no-debugger */
 /* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState, CSSProperties } from 'react';
 import axios from 'axios';
 import './App.css';
 import { Grid, Paper } from '@mui/material';
-import { ITodos, ITodo } from './types/types';
+import { ITodos, ITodo } from './interfaces/interfaces';
 import ListItem from './components/ListItem';
-import List from './components/List';
 import AddTodoForm from './components/AddTodoForm';
 
 function App(this: any) {
@@ -28,6 +28,20 @@ function App(this: any) {
         task: todo,
       });
       setTodos([...todos, res.data.data]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function updateTodo(id: number, todo: ITodo) {
+    try {
+      const res = await axios.patch(`http://localhost:4000/tasks/${id}`, {
+        task: todo,
+      });
+
+      setTodos(
+        todos.map((item) => (item.id === id ? { ...res.data.data } : item))
+      );
     } catch (e) {
       console.log(e);
     }
@@ -76,6 +90,7 @@ function App(this: any) {
           {todos.map((todo: ITodos) => (
             <ListItem
               removeFromList={removeTodoById}
+              updateTodo={updateTodo}
               todo={todo}
               key={todo.id}
             />

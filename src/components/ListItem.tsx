@@ -1,20 +1,49 @@
+/* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react';
 import { Build, Delete } from '@mui/icons-material';
-import { Grid, IconButton, Paper } from '@mui/material';
-import axios from 'axios';
-import { ITodo, ITodos } from '../types/types';
+import SaveIcon from '@mui/icons-material/Save';
+import { Grid, IconButton, Input, Paper } from '@mui/material';
+import { ITodo, ITodos } from '../interfaces/interfaces';
 
 interface ItemProps {
   todo: ITodos;
   removeFromList: (id: number) => void;
+  updateTodo: (id: number, todo: ITodo) => void;
 }
-const ListItem: FC<ItemProps> = function ({ todo, removeFromList }) {
+const ListItem: FC<ItemProps> = function ({
+  todo,
+  removeFromList,
+  updateTodo,
+}) {
   const [fade, setFade] = useState(false);
+
+  const [toggle, setToggle] = useState(false);
+  const [upText, setUpText] = useState('');
+  const [upInput, setUpInput] = useState('');
+
+  const toggleUpdateInput = (item: ITodos) => (event: React.MouseEvent) => {
+    event.preventDefault();
+    setUpText(item.attributes.title);
+    setToggle(true);
+    const newTodo: ITodo = {
+      title: upInput,
+      body: '',
+      is_done: false,
+    };
+    /// Send Updated Item
+    if (toggle) {
+      if (upInput !== '') {
+        updateTodo(item.id, newTodo);
+      }
+      setUpInput('');
+      setToggle(false);
+    }
+  };
 
   const deleteTodo = (id: number) => {
     setFade(true);
 
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise((resolve) => {
       setTimeout(() => {
         resolve(true);
       }, 500);
@@ -39,24 +68,53 @@ const ListItem: FC<ItemProps> = function ({ todo, removeFromList }) {
             width: 500,
           }}
         >
-          <span
-            style={{
-              margin: 'auto',
-              padding: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              marginTop: 10,
-              width: 500,
-            }}
-          >
-            {todo.attributes.title}
-          </span>
+          {!toggle ? (
+            <span
+              style={{
+                margin: 'auto',
+                padding: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                marginTop: 10,
+                width: 500,
+              }}
+            >
+              {todo.attributes.title}
+            </span>
+          ) : todo.attributes.title === upText ? (
+            <Input
+              style={{ width: '90%' }}
+              defaultValue={todo.attributes.title}
+              onChange={(e) => setUpInput(e.target.value)}
+            />
+          ) : (
+            <span
+              style={{
+                margin: 'auto',
+                padding: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                marginTop: 10,
+                width: 500,
+              }}
+            >
+              {todo.attributes.title}
+            </span>
+          )}
+
           <IconButton
             color="primary"
             aria-label="Edit"
             sx={{ marginLeft: 'auto' }}
+            onClick={toggleUpdateInput(todo)}
           >
-            <Build fontSize="small" />
+            {!toggle ? (
+              <Build fontSize="small" />
+            ) : todo.attributes.title === upText ? (
+              <SaveIcon fontSize="small" />
+            ) : (
+              <Build fontSize="small" />
+            )}
           </IconButton>
           <IconButton
             color="secondary"
