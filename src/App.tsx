@@ -1,20 +1,22 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 /* eslint-disable no-debugger */
 /* eslint-disable react/jsx-no-bind */
-import React, { useEffect, useState, CSSProperties } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import { Grid, Paper } from '@mui/material';
 import { ITodos, ITodo } from './interfaces/interfaces';
 import ListItem from './components/ListItem';
 import AddTodoForm from './components/AddTodoForm';
+import { API } from './services/api';
+import NavBar from './components/NavBar';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
 
   async function fetchTodos() {
     try {
-      const res = await axios.get('http://localhost:4000/tasks');
+      const res = await API.get('/tasks');
 
       setTodos(res.data.data);
     } catch (e) {
@@ -24,7 +26,7 @@ function App(this: any) {
 
   async function postTodos(todo: ITodo) {
     try {
-      const res = await axios.post('http://localhost:4000/tasks', {
+      const res = await API.post('/tasks', {
         task: todo,
       });
       setTodos([...todos, res.data.data]);
@@ -35,7 +37,7 @@ function App(this: any) {
 
   async function updateTodo(id: number, todo: ITodo) {
     try {
-      const res = await axios.patch(`http://localhost:4000/tasks/${id}`, {
+      const res = await API.patch(`/tasks/${id}`, {
         task: todo,
       });
 
@@ -49,7 +51,7 @@ function App(this: any) {
 
   async function removeTodoById(id: number) {
     try {
-      const res = await axios.delete(`http://localhost:4000/tasks/${id}`);
+      const res = await API.delete(`/tasks/${id}`);
       setTodos(todos.filter((t: ITodos) => t.id !== id));
     } catch (e) {
       console.log(e);
@@ -64,6 +66,7 @@ function App(this: any) {
 
   return (
     <div className="App">
+      <NavBar />
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <Paper

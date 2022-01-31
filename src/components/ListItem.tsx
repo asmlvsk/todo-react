@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import { Build, Delete } from '@mui/icons-material';
 import SaveIcon from '@mui/icons-material/Save';
 import { Grid, IconButton, Input, Paper } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import { ITodo, ITodos } from '../interfaces/interfaces';
 
 interface ItemProps {
@@ -68,6 +69,7 @@ const ListItem: FC<ItemProps> = function ({
             width: 500,
           }}
         >
+          <Checkbox defaultChecked={todo.attributes.is_done} />
           {!toggle ? (
             <span
               style={{
@@ -126,7 +128,6 @@ const ListItem: FC<ItemProps> = function ({
         </Paper>
       </Grid>
       {/* {todo.attributes.body} */}
-      <input type="checkbox" defaultChecked={todo.attributes.is_done} />
     </div>
   );
 };
