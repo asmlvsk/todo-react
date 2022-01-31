@@ -1,68 +1,42 @@
-/* eslint-disable @typescript-eslint/comma-dangle */
-/* eslint-disable no-debugger */
-/* eslint-disable react/jsx-no-bind */
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import './App.css';
 import { Grid, Paper } from '@mui/material';
 import { ITodos, ITodo } from './interfaces/interfaces';
 import ListItem from './components/ListItem';
 import AddTodoForm from './components/AddTodoForm';
-import { API } from './services/api';
 import NavBar from './components/NavBar';
+import {
+  fetchTodos,
+  postTodo,
+  removeTodoById,
+  updateTodo,
+} from './services/todosApi';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
 
-  async function fetchTodos() {
-    try {
-      const res = await API.get('/tasks');
-
-      setTodos(res.data.data);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function postTodos(todo: ITodo) {
-    try {
-      const res = await API.post('/tasks', {
-        task: todo,
-      });
-      setTodos([...todos, res.data.data]);
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function updateTodo(id: number, todo: ITodo) {
-    try {
-      const res = await API.patch(`/tasks/${id}`, {
-        task: todo,
-      });
-
-      setTodos(
-        todos.map((item) => (item.id === id ? { ...res.data.data } : item))
-      );
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function removeTodoById(id: number) {
-    try {
-      const res = await API.delete(`/tasks/${id}`);
-      setTodos(todos.filter((t: ITodos) => t.id !== id));
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   useEffect(() => {
-    fetchTodos();
+    const getAllTodos = async () => {
+      const { data, error } = await fetchTodos();
+      setTodos(data.data);
+    };
+    getAllTodos();
   }, []);
 
-  console.log(todos);
+  const postTodosHandler = async (todo: ITodo) => {
+    const { data, error } = await postTodo(todo);
+    setTodos([...todos, data.data]);
+  };
+
+  const updateTodoHandler = async (id: number, todo: ITodo) => {
+    const { data, error } = await updateTodo(id, todo);
+    setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
+  };
+
+  const deleteTodoHandler = async (id: number) => {
+    const { data, error } = await removeTodoById(id);
+    setTodos(todos.filter((t: ITodos) => t.id !== id));
+  };
 
   return (
     <div className="App">
@@ -77,7 +51,7 @@ function App(this: any) {
               maxWidth: 500,
             }}
           >
-            <AddTodoForm addToList={postTodos} />
+            <AddTodoForm addToList={postTodosHandler} />
           </Paper>
         </Grid>
         <Grid
@@ -92,8 +66,8 @@ function App(this: any) {
         >
           {todos.map((todo: ITodos) => (
             <ListItem
-              removeFromList={removeTodoById}
-              updateTodo={updateTodo}
+              removeFromList={deleteTodoHandler}
+              updateTodo={updateTodoHandler}
               todo={todo}
               key={todo.id}
             />

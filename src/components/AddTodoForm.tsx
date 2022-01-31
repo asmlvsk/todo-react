@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { createRef, FC } from 'react';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
@@ -39,19 +38,12 @@ const AddTodoForm: FC<Props> = function ({ addToList }) {
     resolver: yupResolver(validationSchema),
   });
 
-  // eslint-disable-next-line consistent-return
   const onSubmit = (data: TaskSubmitForm) => {
     const newTodo: ITodo = {
-      title: inputRef.current!.value,
+      title: data.title,
       body: '',
       is_done: false,
     };
-
-    if (inputRef.current!.value === '') {
-      errorRef.current!.classList.add('active');
-      return null;
-    }
-    errorRef.current!.classList.remove('active');
 
     addToList(newTodo);
   };

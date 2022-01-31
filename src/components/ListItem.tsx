@@ -127,7 +127,6 @@ const ListItem: FC<ItemProps> = function ({
           </IconButton>
         </Paper>
       </Grid>
-      {/* {todo.attributes.body} */}
     </div>
   );
 };
