@@ -1,44 +1,27 @@
 import React, { createRef, FC } from 'react';
 import Input from '@mui/material/Input';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
 import { ITodo } from '../interfaces/interfaces';
+import taskSchema from '../schemas.ts/taskSchema';
 
 interface Props {
   addToList: (todo: ITodo) => void;
 }
 
-type TaskSubmitForm = {
-  title: string;
-};
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>((props, ref) => (
-  <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
-));
-
 const AddTodoForm: FC<Props> = function ({ addToList }) {
-  const errorRef = createRef<HTMLParagraphElement>();
   const inputRef = createRef<HTMLInputElement>();
-
-  const validationSchema = Yup.object().shape({
-    title: Yup.string()
-      .required('Title is required')
-      .min(2, 'Title must be at least 2 characters'),
-  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TaskSubmitForm>({
-    resolver: yupResolver(validationSchema),
+  } = useForm<ITodo>({
+    resolver: yupResolver(taskSchema),
   });
 
-  const onSubmit = (data: TaskSubmitForm) => {
+  const onSubmit = (data: ITodo) => {
     const newTodo: ITodo = {
       title: data.title,
       body: '',
@@ -68,15 +51,6 @@ const AddTodoForm: FC<Props> = function ({ addToList }) {
       >
         Add
       </Button>
-
-      <p ref={errorRef} className="error">
-        Error, must enter a value!
-      </p>
-      <Snackbar autoHideDuration={6000}>
-        <Alert severity="success" sx={{ width: '100%' }}>
-          {errors.title?.message}
-        </Alert>
-      </Snackbar>
     </form>
   );
 };
