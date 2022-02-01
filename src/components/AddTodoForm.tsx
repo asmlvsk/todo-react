@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ITodo } from '../interfaces/interfaces';
-import taskSchema from '../schemas.ts/taskSchema';
+import taskSchema from '../schemas/taskSchema';
 
 interface Props {
   addToList: (todo: ITodo) => void;
