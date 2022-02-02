@@ -38,6 +38,19 @@ export const updateTodo = async (id: number, todo: ITodo) =>
       data: {},
     }));
 
+export const updateTodoStatus = async (id: number, status: boolean) =>
+  API.patch(`/tasks/${id}`, {
+    is_done: status,
+  })
+    .then((res) => ({
+      error: null,
+      data: res.data,
+    }))
+    .catch((error) => ({
+      error: error?.response?.data?.error,
+      data: {},
+    }));
+
 export const removeTodoById = async (id: number) =>
   API.delete(`/tasks/${id}`)
     .then((res) => ({

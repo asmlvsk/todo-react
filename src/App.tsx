@@ -10,6 +10,7 @@ import {
   postTodo,
   removeTodoById,
   updateTodo,
+  updateTodoStatus,
 } from './services/todosApi';
 
 function App(this: any) {
@@ -36,6 +37,11 @@ function App(this: any) {
   const deleteTodoHandler = async (id: number) => {
     const { data, error } = await removeTodoById(id);
     setTodos(todos.filter((t: ITodos) => t.id !== id));
+  };
+
+  const updateTodoStatusHandler = async (id: number, isDone: boolean) => {
+    const { data, error } = await updateTodoStatus(id, isDone);
+    setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
   };
 
   return (
@@ -68,6 +74,7 @@ function App(this: any) {
             <ListItem
               removeFromList={deleteTodoHandler}
               updateTodo={updateTodoHandler}
+              updateTodoIsDone={updateTodoStatusHandler}
               todo={todo}
               key={todo.id}
             />

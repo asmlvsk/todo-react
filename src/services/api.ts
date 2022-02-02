@@ -1,5 +1,5 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'https://tasks-ruby.herokuapp.com' });
+const API = axios.create({ baseURL: 'http://localhost:4000' });
 
 export default API;

@@ -16,6 +16,7 @@ const AddTodoForm: FC<Props> = function ({ addToList }) {
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
   } = useForm<ITodo>({
     resolver: yupResolver(taskSchema),
@@ -29,6 +30,7 @@ const AddTodoForm: FC<Props> = function ({ addToList }) {
     };
 
     addToList(newTodo);
+    resetField('title');
   };
 
   return (

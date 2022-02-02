@@ -10,17 +10,20 @@ interface ItemProps {
   todo: ITodos;
   removeFromList: (id: number) => void;
   updateTodo: (id: number, todo: ITodo) => void;
+  updateTodoIsDone: (id: number, done: boolean) => void;
 }
 const ListItem: FC<ItemProps> = function ({
   todo,
   removeFromList,
   updateTodo,
+  updateTodoIsDone,
 }) {
   const [fade, setFade] = useState(false);
 
   const [toggle, setToggle] = useState(false);
   const [upText, setUpText] = useState('');
   const [upInput, setUpInput] = useState('');
+  const [isDone, setIsDone] = useState(todo.attributes.is_done);
 
   const toggleUpdateInput = (item: ITodos) => (event: React.MouseEvent) => {
     event.preventDefault();
@@ -39,6 +42,10 @@ const ListItem: FC<ItemProps> = function ({
       setUpInput('');
       setToggle(false);
     }
+  };
+
+  const toggleIsDone = (item: ITodos) => () => {
+    updateTodoIsDone(item.id, !isDone);
   };
 
   const deleteTodo = (id: number) => {
@@ -69,7 +76,7 @@ const ListItem: FC<ItemProps> = function ({
             width: 500,
           }}
         >
-          <Checkbox defaultChecked={todo.attributes.is_done} />
+          <Checkbox defaultChecked={isDone} onChange={toggleIsDone(todo)} />
           {!toggle ? (
             <span
               style={{
