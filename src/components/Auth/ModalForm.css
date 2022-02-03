@@ -1,0 +1,12 @@
+.formBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.buttonArea {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
