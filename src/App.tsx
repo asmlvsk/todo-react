@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { Grid, Paper } from '@mui/material';
-import { ITodos, ITodo } from './interfaces/interfaces';
+import { ITodos, ITodo, IUserBody } from './interfaces/interfaces';
 import ListItem from './components/ListItem';
 import AddTodoForm from './components/AddTodoForm';
 import NavBar from './components/NavBar';
@@ -12,6 +12,7 @@ import {
   updateTodo,
   updateTodoStatus,
 } from './services/todosApi';
+import { signUpUser } from './services/userApi';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
@@ -44,9 +45,13 @@ function App(this: any) {
     setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
   };
 
+  const postUserHandler = async (userBody: IUserBody) => {
+    const { data, error } = await signUpUser(userBody);
+  };
+
   return (
     <div className="App">
-      <NavBar />
+      <NavBar signUpUser={postUserHandler} />
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <Paper
