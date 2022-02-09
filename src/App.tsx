@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Grid, Paper } from '@mui/material';
-import { ITodos, ITodo, IUserBody } from './interfaces/interfaces';
-import ListItem from './components/ListItem';
-import AddTodoForm from './components/AddTodoForm';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import {
+  ITodos,
+  ITodo,
+  IUserBody,
+  IUserLoginBody,
+} from './interfaces/interfaces';
 import NavBar from './components/NavBar';
 import {
   fetchTodos,
@@ -12,17 +15,35 @@ import {
   updateTodo,
   updateTodoStatus,
 } from './services/todosApi';
-import { signUpUser } from './services/userApi';
+import {
+  signUpUser,
+  signInUser,
+  loggedIn,
+  logoutUser,
+} from './services/userApi';
+import MainPage from './components/MainPage';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
+  const [userName, setUserName] = useState('');
+  const [isLogged, setIsLogged] = useState(false);
+
+  const getAllTodos = async () => {
+    const { data, error } = await fetchTodos();
+    setTodos(data.data);
+  };
+
+  const loggedInHandler = async () => {
+    const { data, error } = await loggedIn();
+    if (data.logged_in) {
+      getAllTodos();
+    }
+    setUserName(data.user.name);
+    setIsLogged(data.logged_in);
+  };
 
   useEffect(() => {
-    const getAllTodos = async () => {
-      const { data, error } = await fetchTodos();
-      setTodos(data.data);
-    };
-    getAllTodos();
+    loggedInHandler();
   }, []);
 
   const postTodosHandler = async (todo: ITodo) => {
@@ -49,43 +70,39 @@ function App(this: any) {
     const { data, error } = await signUpUser(userBody);
   };
 
+  const logInUserHandler = async (userBody: IUserLoginBody) => {
+    const { data, error } = await signInUser(userBody);
+  };
+
+  const logOutUserHandler = async () => {
+    const { data, error } = await logoutUser();
+  };
+
   return (
     <div className="App">
-      <NavBar signUpUser={postUserHandler} />
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <Paper
-            sx={{
-              padding: '20px',
-              margin: 'auto',
-              textAlign: 'center',
-              maxWidth: 500,
-            }}
-          >
-            <AddTodoForm addToList={postTodosHandler} />
-          </Paper>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            padding: '20px',
-            margin: 'auto',
-            textAlign: 'center',
-            width: 500,
-          }}
-        >
-          {todos.map((todo: ITodos) => (
-            <ListItem
-              removeFromList={deleteTodoHandler}
-              updateTodo={updateTodoHandler}
-              updateTodoIsDone={updateTodoStatusHandler}
-              todo={todo}
-              key={todo.id}
-            />
-          ))}
-        </Grid>
-      </Grid>
+      <BrowserRouter>
+        <NavBar
+          signUpUser={postUserHandler}
+          signInUser={logInUserHandler}
+          logOutUserHandler={logOutUserHandler}
+          userName={userName}
+        />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MainPage
+                todos={todos}
+                isLogged={isLogged}
+                postTodosHandler={postTodosHandler}
+                updateTodoHandler={updateTodoHandler}
+                deleteTodoHandler={deleteTodoHandler}
+                updateTodoStatusHandler={updateTodoStatusHandler}
+              />
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

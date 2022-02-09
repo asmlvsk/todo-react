@@ -18,4 +18,14 @@ export interface IUserBody {
   name: string;
   email: string;
   password: string;
+  passwordConfirmation: string;
+}
+
+export interface IUserLoginBody {
+  email: string;
+  password: string;
+}
+
+export interface IUserName {
+  name: string;
 }

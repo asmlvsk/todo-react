@@ -1,10 +1,9 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import './ModalForm.css';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import React, { FC, useState } from 'react';
-import { IUser, IUserBody } from '../../interfaces/interfaces';
-import userSchema from '../../schemas/userSchema';
+import { IUser, IUserBody, IUserLoginBody } from '../../interfaces/interfaces';
+import Login from './Login';
+import SignUp from './SignUp';
 
 const style = {
   // eslint-disable-next-line @typescript-eslint/prefer-as-const
@@ -21,62 +20,32 @@ const style = {
 type IProps = {
   handleClose: () => void;
   signUpUser: (userBody: IUserBody) => void;
+  signInUser: (userBody: IUserLoginBody) => void;
 };
 
-const ModalForm: FC<IProps> = function ({ handleClose, signUpUser }) {
+const ModalForm: FC<IProps> = function ({
+  handleClose,
+  signUpUser,
+  signInUser,
+}) {
   const [isSignIn, setIsSignIn] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<IUserBody>({
-    resolver: yupResolver(userSchema),
-  });
-
-  const onSubmit = (user: IUserBody) => {
-    const newUser: IUserBody = {
-      name: user.name,
-      email: user.email,
-      password: user.password,
-    };
-
-    signUpUser(newUser);
-    reset(user);
-  };
-
   return (
     <Box sx={style}>
-      <form className="formBody" onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant="h5" gutterBottom component="div">
-          Sign Up
-        </Typography>
-        <TextField label="Name" variant="filled" {...register('name')} />
-        <div className="invalid-feedback">{errors.name?.message}</div>
-        <TextField
-          label="Email"
-          variant="filled"
-          type="email"
-          {...register('email')}
-        />
-        <div className="invalid-feedback">{errors.email?.message}</div>
-        <TextField
-          label="Password"
-          variant="filled"
-          type="password"
-          {...register('password')}
-        />
-        <div className="invalid-feedback">{errors.password?.message}</div>
-        <div className="buttonArea">
-          <Button variant="contained" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button type="submit" variant="contained" color="primary">
-            Signup
+      {isSignIn ? (
+        <div className="container">
+          <Login handleClose={handleClose} signInUser={signInUser} />
+          <Button variant="contained" onClick={() => setIsSignIn(!isSignIn)}>
+            Sign Up
           </Button>
         </div>
-      </form>
+      ) : (
+        <div className="container">
+          <SignUp handleClose={handleClose} signUpUser={signUpUser} />
+          <Button variant="contained" onClick={() => setIsSignIn(!isSignIn)}>
+            Sign In
+          </Button>
+        </div>
+      )}
     </Box>
   );
 };

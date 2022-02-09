@@ -1,9 +1,6 @@
 import * as Yup from 'yup';
 
-const userSchema = Yup.object().shape({
-  name: Yup.string()
-    .required('Name is required')
-    .min(2, 'Name must be at least 2 characters'),
+export const loginSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email format')
     .required('Email is required')
@@ -13,4 +10,11 @@ const userSchema = Yup.object().shape({
     .min(2, 'Password must be at least 2 characters'),
 });
 
-export default userSchema;
+export const regSchema = loginSchema.shape({
+  name: Yup.string()
+    .required('Name is required')
+    .min(2, 'Name must be at least 2 characters'),
+  passwordConfirmation: Yup.string()
+    .required('Confirm password is required.')
+    .oneOf([Yup.ref('password')], 'Passwords must match'),
+});
