@@ -6,6 +6,7 @@ import {
   ITodo,
   IUserBody,
   IUserLoginBody,
+  IUserName,
 } from './interfaces/interfaces';
 import NavBar from './components/NavBar';
 import {
@@ -25,20 +26,20 @@ import MainPage from './components/MainPage';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
-  const [userName, setUserName] = useState('');
+  const [user, setUser] = useState<IUserName | null>(null);
   const [isLogged, setIsLogged] = useState(false);
 
   const getAllTodos = async () => {
     const { data, error } = await fetchTodos();
-    setTodos(data.data);
+    if (!error) setTodos(data.data);
   };
 
   const loggedInHandler = async () => {
     const { data, error } = await loggedIn();
     if (data.logged_in) {
+      setUser(data.user);
       getAllTodos();
     }
-    setUserName(data.user.name);
     setIsLogged(data.logged_in);
   };
 
@@ -68,14 +69,28 @@ function App(this: any) {
 
   const postUserHandler = async (userBody: IUserBody) => {
     const { data, error } = await signUpUser(userBody);
+    if (!error) {
+      setIsLogged(true);
+      setUser(data.user);
+      getAllTodos();
+    }
   };
 
   const logInUserHandler = async (userBody: IUserLoginBody) => {
     const { data, error } = await signInUser(userBody);
+
+    if (!error || error.response.status !== 401) {
+      setIsLogged(true);
+      setUser(data.user);
+      getAllTodos();
+    }
+    // Error Handler
   };
 
   const logOutUserHandler = async () => {
     const { data, error } = await logoutUser();
+    setUser(null);
+    setIsLogged(false);
   };
 
   return (
@@ -85,7 +100,7 @@ function App(this: any) {
           signUpUser={postUserHandler}
           signInUser={logInUserHandler}
           logOutUserHandler={logOutUserHandler}
-          userName={userName}
+          userName={user ? user?.name : null}
         />
         <Routes>
           <Route

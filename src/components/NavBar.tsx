@@ -7,13 +7,13 @@ import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton, Modal } from '@mui/material';
 import ModalForm from './Auth/ModalForm';
-import { IUserBody, IUserLoginBody } from '../interfaces/interfaces';
+import { IUserBody, IUserLoginBody, IUserName } from '../interfaces/interfaces';
 
 interface IProps {
   signUpUser: (userBody: IUserBody) => void;
   signInUser: (userBody: IUserLoginBody) => void;
   logOutUserHandler: () => void;
-  userName: string;
+  userName: string | null;
 }
 
 const NavBar: FC<IProps> = function ({
@@ -49,8 +49,8 @@ const NavBar: FC<IProps> = function ({
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Welcome, {userName}
               </Typography>
-              <IconButton>
-                <LogoutIcon onClick={logOutUserHandler} color="inherit" />
+              <IconButton onClick={logOutUserHandler}>
+                <LogoutIcon color="inherit" />
               </IconButton>
             </div>
           )}
@@ -60,11 +60,13 @@ const NavBar: FC<IProps> = function ({
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <ModalForm
-              handleClose={handleClose}
-              signUpUser={signUpUser}
-              signInUser={signInUser}
-            />
+            <Box>
+              <ModalForm
+                handleClose={handleClose}
+                signUpUser={signUpUser}
+                signInUser={signInUser}
+              />
+            </Box>
           </Modal>
         </Toolbar>
       </AppBar>

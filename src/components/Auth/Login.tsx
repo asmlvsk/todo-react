@@ -56,7 +56,7 @@ const Login: FC<IProps> = function ({ handleClose, signInUser }) {
         <Button variant="contained" onClick={handleClose}>
           Cancel
         </Button>
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" variant="contained" color="secondary">
           Sign In
         </Button>
       </div>

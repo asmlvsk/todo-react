@@ -70,7 +70,7 @@ const SignUp: FC<IProps> = function ({ handleClose, signUpUser }) {
         <Button variant="contained" onClick={handleClose}>
           Cancel
         </Button>
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" variant="contained" color="secondary">
           Signup
         </Button>
       </div>

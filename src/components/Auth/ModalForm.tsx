@@ -28,7 +28,7 @@ const ModalForm: FC<IProps> = function ({
   signUpUser,
   signInUser,
 }) {
-  const [isSignIn, setIsSignIn] = useState(false);
+  const [isSignIn, setIsSignIn] = useState(true);
   return (
     <Box sx={style}>
       {isSignIn ? (
