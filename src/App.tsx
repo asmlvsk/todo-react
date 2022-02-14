@@ -7,6 +7,7 @@ import {
   IUserBody,
   IUserLoginBody,
   IUserName,
+  ICategory,
 } from './interfaces/interfaces';
 import NavBar from './components/NavBar';
 import {
@@ -14,6 +15,7 @@ import {
   postTodo,
   removeTodoById,
   updateTodo,
+  updateTodoCategory,
   updateTodoStatus,
 } from './services/todosApi';
 import {
@@ -23,9 +25,11 @@ import {
   logoutUser,
 } from './services/userApi';
 import MainPage from './components/MainPage';
+import fetchCategories from './services/categoryApi';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [user, setUser] = useState<IUserName | null>(null);
   const [isLogged, setIsLogged] = useState(false);
 
@@ -34,10 +38,16 @@ function App(this: any) {
     if (!error) setTodos(data.data);
   };
 
+  const getCategories = async () => {
+    const { data, error } = await fetchCategories();
+    setCategories(data.data);
+  };
+
   const loggedInHandler = async () => {
     const { data, error } = await loggedIn();
     if (data.logged_in) {
       setUser(data.user);
+      getCategories();
       getAllTodos();
     }
     setIsLogged(data.logged_in);
@@ -93,6 +103,11 @@ function App(this: any) {
     setIsLogged(false);
   };
 
+  const updateCategoryInTask = async (id: number, categoryId: number) => {
+    const { data, error } = await updateTodoCategory(id, categoryId);
+    setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
+  };
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -108,11 +123,13 @@ function App(this: any) {
             element={
               <MainPage
                 todos={todos}
+                categories={categories}
                 isLogged={isLogged}
                 postTodosHandler={postTodosHandler}
                 updateTodoHandler={updateTodoHandler}
                 deleteTodoHandler={deleteTodoHandler}
                 updateTodoStatusHandler={updateTodoStatusHandler}
+                updateCategoryInTask={updateCategoryInTask}
               />
             }
           />

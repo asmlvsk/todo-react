@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import './MainPage.css';
 import { Grid, Paper, Typography } from '@mui/material';
 import ListItem from './ListItem';
-import { ITodo, ITodos } from '../interfaces/interfaces';
+import { ICategory, ITodo, ITodos } from '../interfaces/interfaces';
 import AddTodoForm from './AddTodoForm';
 import { loggedIn } from '../services/userApi';
 
@@ -12,7 +12,9 @@ type Props = {
   updateTodoHandler: (id: number, todo: ITodo) => void;
   deleteTodoHandler: (id: number) => void;
   updateTodoStatusHandler: (id: number, isDone: boolean) => void;
+  updateCategoryInTask: (id: number, categoryId: number) => void;
   isLogged: boolean;
+  categories: ICategory[];
 };
 
 const MainPage: FC<Props> = function ({
@@ -22,6 +24,8 @@ const MainPage: FC<Props> = function ({
   deleteTodoHandler,
   updateTodoStatusHandler,
   isLogged,
+  categories,
+  updateCategoryInTask,
 }) {
   return (
     <div>
@@ -54,8 +58,10 @@ const MainPage: FC<Props> = function ({
                 removeFromList={deleteTodoHandler}
                 updateTodo={updateTodoHandler}
                 updateTodoIsDone={updateTodoStatusHandler}
+                updateCategoryInTask={updateCategoryInTask}
                 todo={todo}
                 key={todo.id}
+                categories={categories}
               />
             ))}
           </Grid>

@@ -7,6 +7,15 @@ export interface ITodo {
 export interface ITodos {
   id: number;
   attributes: ITodo;
+  relationships: {
+    categories: {
+      data: ITodoCategory[];
+    };
+  };
+}
+
+export interface ITodoCategory {
+  id: number;
 }
 
 export interface IUser {
@@ -28,4 +37,13 @@ export interface IUserLoginBody {
 
 export interface IUserName {
   name: string;
+}
+
+export interface ICategory {
+  id: number;
+  attributes: ICategoryBody;
+}
+
+export interface ICategoryBody {
+  title: string;
 }
