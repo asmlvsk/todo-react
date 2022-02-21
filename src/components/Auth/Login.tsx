@@ -1,8 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { IUserLoginBody } from '../../interfaces/interfaces';
 import { loginSchema } from '../../schemas/userSchema';
 
@@ -12,11 +11,9 @@ type IProps = {
 };
 
 const Login: FC<IProps> = function ({ handleClose, signInUser }) {
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<IUserLoginBody>({
     resolver: yupResolver(loginSchema),

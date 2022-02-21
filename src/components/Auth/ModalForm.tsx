@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material';
 import './ModalForm.css';
 import React, { FC, useState } from 'react';
-import { IUser, IUserBody, IUserLoginBody } from '../../interfaces/interfaces';
+import { IUserBody, IUserLoginBody } from '../../interfaces/interfaces';
 import Login from './Login';
 import SignUp from './SignUp';
 

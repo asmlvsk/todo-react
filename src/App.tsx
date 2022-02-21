@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -8,6 +9,7 @@ import {
   IUserLoginBody,
   IUserName,
   ICategory,
+  IKeyValue,
 } from './interfaces/interfaces';
 import NavBar from './components/NavBar';
 import {
@@ -39,12 +41,12 @@ function App(this: any) {
   };
 
   const getCategories = async () => {
-    const { data, error } = await fetchCategories();
+    const { data } = await fetchCategories();
     setCategories(data.data);
   };
 
   const loggedInHandler = async () => {
-    const { data, error } = await loggedIn();
+    const { data } = await loggedIn();
     if (data.logged_in) {
       setUser(data.user);
       getCategories();
@@ -58,22 +60,22 @@ function App(this: any) {
   }, []);
 
   const postTodosHandler = async (todo: ITodo) => {
-    const { data, error } = await postTodo(todo);
+    const { data } = await postTodo(todo);
     setTodos([...todos, data.data]);
   };
 
   const updateTodoHandler = async (id: number, todo: ITodo) => {
-    const { data, error } = await updateTodo(id, todo);
+    const { data } = await updateTodo(id, todo);
     setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
   };
 
   const deleteTodoHandler = async (id: number) => {
-    const { data, error } = await removeTodoById(id);
+    await removeTodoById(id);
     setTodos(todos.filter((t: ITodos) => t.id !== id));
   };
 
   const updateTodoStatusHandler = async (id: number, isDone: boolean) => {
-    const { data, error } = await updateTodoStatus(id, isDone);
+    const { data } = await updateTodoStatus(id, isDone);
     setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
   };
 
@@ -98,14 +100,14 @@ function App(this: any) {
   };
 
   const logOutUserHandler = async () => {
-    const { data, error } = await logoutUser();
+    await logoutUser();
     setUser(null);
     setIsLogged(false);
   };
 
-  const updateCategoryInTask = async (id: number, categoryId: number) => {
-    const { data, error } = await updateTodoCategory(id, categoryId);
-    setTodos(todos.map((item) => (item.id === id ? { ...data.data } : item)));
+  const updateCategoryInTask = async (id: number, categoryIds: IKeyValue[]) => {
+    const { data } = await updateTodoCategory(id, categoryIds);
+    setTodos(todos.map((todo) => (todo.id === id ? { ...data.data } : todo)));
   };
 
   return (

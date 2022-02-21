@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton, Modal } from '@mui/material';
 import ModalForm from './Auth/ModalForm';
-import { IUserBody, IUserLoginBody, IUserName } from '../interfaces/interfaces';
+import { IUserBody, IUserLoginBody } from '../interfaces/interfaces';
 
 interface IProps {
   signUpUser: (userBody: IUserBody) => void;

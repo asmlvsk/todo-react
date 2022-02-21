@@ -1,4 +1,4 @@
-import { ICategory, ITodo } from '../interfaces/interfaces';
+import { ITodo, IKeyValue } from '../interfaces/interfaces';
 import API from './api';
 
 export const fetchTodos = async () =>
@@ -51,10 +51,8 @@ export const updateTodoStatus = async (id: number, status: boolean) =>
       data: {},
     }));
 
-export const updateTodoCategory = async (id: number, categoryId: number) =>
-  API.patch(`/tasks/${id}/add_category`, {
-    data: categoryId,
-  })
+export const removeTodoById = async (id: number) =>
+  API.delete(`/tasks/${id}`)
     .then((res) => ({
       error: null,
       data: res.data,
@@ -64,8 +62,14 @@ export const updateTodoCategory = async (id: number, categoryId: number) =>
       data: {},
     }));
 
-export const removeTodoById = async (id: number) =>
-  API.delete(`/tasks/${id}`)
+export const updateTodoCategory = async (
+  id: number,
+  // eslint-disable-next-line @typescript-eslint/comma-dangle
+  categoryIds: IKeyValue[]
+) =>
+  API.put(`/tasks/${id}`, {
+    task: { categories: categoryIds },
+  })
     .then((res) => ({
       error: null,
       data: res.data,

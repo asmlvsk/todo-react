@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, TextField, Typography } from '@mui/material';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router-dom';
 import { IUserBody } from '../../interfaces/interfaces';
@@ -15,7 +15,6 @@ const SignUp: FC<IProps> = function ({ handleClose, signUpUser }) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<IUserBody>({
     resolver: yupResolver(regSchema),

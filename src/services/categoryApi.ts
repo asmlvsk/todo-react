@@ -1,4 +1,3 @@
-import { ITodo } from '../interfaces/interfaces';
 import API from './api';
 
 const fetchCategories = async () =>

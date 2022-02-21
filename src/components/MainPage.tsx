@@ -1,30 +1,29 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import './MainPage.css';
 import { Grid, Paper, Typography } from '@mui/material';
 import ListItem from './ListItem';
-import { ICategory, ITodo, ITodos } from '../interfaces/interfaces';
+import { ICategory, ITodo, IKeyValue, ITodos } from '../interfaces/interfaces';
 import AddTodoForm from './AddTodoForm';
-import { loggedIn } from '../services/userApi';
 
 type Props = {
   todos: ITodos[];
+  categories: ICategory[];
+  isLogged: boolean;
   postTodosHandler: (todo: ITodo) => void;
   updateTodoHandler: (id: number, todo: ITodo) => void;
   deleteTodoHandler: (id: number) => void;
   updateTodoStatusHandler: (id: number, isDone: boolean) => void;
-  updateCategoryInTask: (id: number, categoryId: number) => void;
-  isLogged: boolean;
-  categories: ICategory[];
+  updateCategoryInTask: (id: number, categoryId: IKeyValue[]) => void;
 };
 
 const MainPage: FC<Props> = function ({
   todos,
+  categories,
+  isLogged,
   postTodosHandler,
   updateTodoHandler,
   deleteTodoHandler,
   updateTodoStatusHandler,
-  isLogged,
-  categories,
   updateCategoryInTask,
 }) {
   return (

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable @typescript-eslint/comma-dangle */
 /* eslint-disable no-nested-ternary */
 import React, { FC, useState } from 'react';
 import { Build, Delete } from '@mui/icons-material';
@@ -8,31 +6,24 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import {
   Autocomplete,
-  Box,
-  Chip,
-  FormControl,
   Grid,
   IconButton,
   Input,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
   Paper,
-  Select,
-  SelectChangeEvent,
   TextField,
 } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
-import { ICategory, ITodo, ITodos } from '../interfaces/interfaces';
+import { ICategory, ITodo, IKeyValue, ITodos } from '../interfaces/interfaces';
 
 interface ItemProps {
   todo: ITodos;
   removeFromList: (id: number) => void;
   updateTodo: (id: number, todo: ITodo) => void;
   updateTodoIsDone: (id: number, done: boolean) => void;
-  updateCategoryInTask: (id: number, categoryId: number) => void;
+  updateCategoryInTask: (id: number, categoryIds: IKeyValue[]) => void;
   categories: ICategory[];
 }
+
 const ListItem: FC<ItemProps> = function ({
   todo,
   removeFromList,
@@ -47,8 +38,23 @@ const ListItem: FC<ItemProps> = function ({
   const [upText, setUpText] = useState('');
   const [upInput, setUpInput] = useState('');
   const [isDone, setIsDone] = useState(todo.attributes.is_done);
-  const [categoryName, setCategoryName] = useState<ICategory[] | string[]>(
-    categories
+
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
+  const gridClass = fade ? 'fade-out' : '';
+
+  const categoriesWithValues = categories.map((category) => ({
+    value: category.id,
+    ...category,
+  }));
+
+  const defaultCategoryIds = todo.relationships.categories.data.map(
+    (cat) => cat.id
+  );
+
+  const defaultValues = categoriesWithValues.filter((cat) =>
+    defaultCategoryIds.includes(cat.id)
   );
 
   const toggleUpdateInput = (item: ITodos) => (event: React.MouseEvent) => {
@@ -60,7 +66,7 @@ const ListItem: FC<ItemProps> = function ({
       body: '',
       is_done: false,
     };
-    /// Send Updated Item
+
     if (toggle) {
       if (upInput !== '') {
         updateTodo(item.id, newTodo);
@@ -74,6 +80,10 @@ const ListItem: FC<ItemProps> = function ({
     updateTodoIsDone(item.id, !isDone);
   };
 
+  const handleChange = (e: React.SyntheticEvent, value: ICategory[]) => {
+    updateCategoryInTask(todo.id, [...value]);
+  };
+
   const deleteTodo = (id: number) => {
     setFade(true);
 
@@ -84,16 +94,6 @@ const ListItem: FC<ItemProps> = function ({
     });
 
     promise.then(() => removeFromList(id));
-  };
-
-  const gridClass = fade ? 'fade-out' : '';
-
-  const handleChange = (event: SelectChangeEvent<typeof categoryName>) => {
-    const {
-      target: { value },
-    } = event;
-
-    setCategoryName(typeof value === 'string' ? value.split(',') : value);
   };
 
   return (
@@ -162,6 +162,7 @@ const ListItem: FC<ItemProps> = function ({
                 <Build fontSize="small" />
               )}
             </IconButton>
+
             <IconButton
               color="secondary"
               aria-label="Delete"
@@ -171,39 +172,37 @@ const ListItem: FC<ItemProps> = function ({
             </IconButton>
           </div>
 
-          <FormControl sx={{ m: 1, width: '100%' }}>
-            <InputLabel id="demo-multiple-chip-label">Category</InputLabel>
-            <Select
-              labelId="demo-multiple-chip-label"
-              id="demo-multiple-chip"
-              multiple
-              value={categoryName}
-              onChange={handleChange}
-              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {todo.relationships.categories.data.map((key) =>
-                    categories.map((c) =>
-                      c.id === key.id
-                        ? selected.map((selectedValue) => (
-                            <Chip
-                              key={selectedValue.id}
-                              label={selectedValue.attributes.title}
-                            />
-                          ))
-                        : null
-                    )
-                  )}
-                </Box>
-              )}
-            >
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.attributes.title}>
-                  {category.attributes.title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <Autocomplete
+            multiple
+            id="checkboxes-tags-demo"
+            options={categoriesWithValues}
+            disableCloseOnSelect
+            onChange={handleChange}
+            defaultValue={defaultValues}
+            isOptionEqualToValue={(option, value) =>
+              option.attributes.title === value.attributes.title
+            }
+            getOptionLabel={(option) => option.attributes.title}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  style={{ marginRight: 8 }}
+                  checked={selected}
+                />
+                {option.attributes.title}
+              </li>
+            )}
+            style={{ width: 500 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Checkboxes"
+                placeholder="Favorites"
+              />
+            )}
+          />
         </Paper>
       </Grid>
     </div>

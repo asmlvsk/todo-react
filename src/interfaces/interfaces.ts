@@ -1,26 +1,20 @@
+export interface IKeyValue {
+  id: number;
+}
+
 export interface ITodo {
   title: string;
   body: string;
   is_done: boolean;
 }
 
-export interface ITodos {
-  id: number;
+export interface ITodos extends IKeyValue {
   attributes: ITodo;
   relationships: {
     categories: {
-      data: ITodoCategory[];
+      data: IKeyValue[];
     };
   };
-}
-
-export interface ITodoCategory {
-  id: number;
-}
-
-export interface IUser {
-  id: number;
-  attributes: IUserBody;
 }
 
 export interface IUserBody {
@@ -39,8 +33,7 @@ export interface IUserName {
   name: string;
 }
 
-export interface ICategory {
-  id: number;
+export interface ICategory extends IKeyValue {
   attributes: ICategoryBody;
 }
 
