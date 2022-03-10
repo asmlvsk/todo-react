@@ -5,8 +5,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { IconButton, Modal } from '@mui/material';
+import { Avatar, IconButton, Modal } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { deepOrange } from '@mui/material/colors';
 import ModalForm from './Auth/ModalForm';
 import { IUserBody, IUserLoginBody } from '../interfaces/interfaces';
 
@@ -15,6 +16,7 @@ interface IProps {
   signInUser: (userBody: IUserLoginBody) => void;
   logOutUserHandler: () => void;
   userName: string | null;
+  userAvatar: string | undefined;
 }
 
 const NavBar: FC<IProps> = function ({
@@ -22,6 +24,7 @@ const NavBar: FC<IProps> = function ({
   signInUser,
   logOutUserHandler,
   userName,
+  userAvatar,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -51,6 +54,14 @@ const NavBar: FC<IProps> = function ({
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Welcome, <Link to="/profile">{userName}</Link>
               </Typography>
+              <Link to="/profile">
+                <Avatar
+                  sx={{ bgcolor: deepOrange[500] }}
+                  alt={userName}
+                  src={userAvatar}
+                />
+              </Link>
+
               <IconButton onClick={logOutUserHandler}>
                 <LogoutIcon color="inherit" />
               </IconButton>

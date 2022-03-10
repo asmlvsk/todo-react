@@ -128,6 +128,7 @@ function App(this: any) {
           signInUser={logInUserHandler}
           logOutUserHandler={logOutUserHandler}
           userName={user ? user?.user.name : null}
+          userAvatar={user ? user?.avatar : undefined}
         />
         <Routes>
           <Route
