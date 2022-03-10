@@ -7,7 +7,7 @@ import {
   ITodo,
   IUserBody,
   IUserLoginBody,
-  IUserName,
+  IUserInfo,
   ICategory,
   IKeyValue,
 } from './interfaces/interfaces';
@@ -25,14 +25,16 @@ import {
   signInUser,
   loggedIn,
   logoutUser,
+  updateUserAvatar,
 } from './services/userApi';
 import MainPage from './components/MainPage';
 import fetchCategories from './services/categoryApi';
+import Profile from './components/Profile/Profile';
 
 function App(this: any) {
   const [todos, setTodos] = useState<ITodos[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [user, setUser] = useState<IUserName | null>(null);
+  const [user, setUser] = useState<IUserInfo | null>(null);
   const [isLogged, setIsLogged] = useState(false);
 
   const getAllTodos = async () => {
@@ -48,7 +50,7 @@ function App(this: any) {
   const loggedInHandler = async () => {
     const { data } = await loggedIn();
     if (data.logged_in) {
-      setUser(data.user);
+      setUser(data);
       getCategories();
       getAllTodos();
     }
@@ -88,6 +90,14 @@ function App(this: any) {
     }
   };
 
+  const updateUserAvatarHandler = async (id: number, avatar: string) => {
+    const { data, error } = await updateUserAvatar(id, avatar);
+    if (!error) {
+      setUser(data.user);
+      loggedInHandler();
+    }
+  };
+
   const logInUserHandler = async (userBody: IUserLoginBody) => {
     const { data, error } = await signInUser(userBody);
 
@@ -117,7 +127,7 @@ function App(this: any) {
           signUpUser={postUserHandler}
           signInUser={logInUserHandler}
           logOutUserHandler={logOutUserHandler}
-          userName={user ? user?.name : null}
+          userName={user ? user?.user.name : null}
         />
         <Routes>
           <Route
@@ -132,6 +142,15 @@ function App(this: any) {
                 deleteTodoHandler={deleteTodoHandler}
                 updateTodoStatusHandler={updateTodoStatusHandler}
                 updateCategoryInTask={updateCategoryInTask}
+              />
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Profile
+                user={user}
+                updateUserAvatarHandler={updateUserAvatarHandler}
               />
             }
           />

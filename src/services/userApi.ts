@@ -54,3 +54,17 @@ export const logoutUser = async () =>
       error: error?.response?.data?.error,
       data: {},
     }));
+
+export const updateUserAvatar = async (id: number, avatar: string) =>
+  API.patch(`/sessions/${id}`, {
+    withCredentials: true,
+    avatar,
+  })
+    .then((res) => ({
+      error: null,
+      data: res.data,
+    }))
+    .catch((error) => ({
+      error: error?.response?.data?.error,
+      data: {},
+    }));

@@ -11,3 +11,8 @@
   opacity: 0;
   transition: visibility 1s 0.5s, opacity 0.5s;
 }
+
+a {
+  text-decoration: none;
+  color: white;
+}

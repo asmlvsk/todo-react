@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton, Modal } from '@mui/material';
+import { Link } from 'react-router-dom';
 import ModalForm from './Auth/ModalForm';
 import { IUserBody, IUserLoginBody } from '../interfaces/interfaces';
 
@@ -32,7 +33,7 @@ const NavBar: FC<IProps> = function ({
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            TODO
+            <Link to="/">TODO</Link>
           </Typography>
           {!userName ? (
             <Button onClick={handleOpen} color="inherit">
@@ -44,10 +45,11 @@ const NavBar: FC<IProps> = function ({
                 display: 'flex',
                 flexDirection: 'row',
                 gap: '3rem',
+                alignItems: 'center',
               }}
             >
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Welcome, {userName}
+                Welcome, <Link to="/profile">{userName}</Link>
               </Typography>
               <IconButton onClick={logOutUserHandler}>
                 <LogoutIcon color="inherit" />

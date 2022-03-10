@@ -29,8 +29,12 @@ export interface IUserLoginBody {
   password: string;
 }
 
-export interface IUserName {
-  name: string;
+export interface IUserInfo extends IKeyValue {
+  avatar: string;
+  user: {
+    name: string;
+    email: string;
+  };
 }
 
 export interface ICategory extends IKeyValue {
